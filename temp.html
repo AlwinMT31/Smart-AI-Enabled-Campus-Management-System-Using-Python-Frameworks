@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Courses - LPU Smart Campus Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top left, #1e1b4b, var(--bg-dark));
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .header-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn-link {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .btn-link:hover,
+        .btn-primary:hover {
+            background: var(--primary-light);
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.5);
+        }
+
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            color: var(--primary-light);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .form-select {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            width: 200px;
+        }
+
+        .form-select option {
+            background: var(--bg-dark);
+            color: white;
+        }
+
+        .assign-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+    </style>
+    <style>
+        /* ... existing styles ... */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--bg-dark);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            right: 0;
+            top: 100%;
+            margin-top: 10px;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <h1>LPU SmartCampus</h1>
+        <div style="display:flex; gap:15px; align-items:center;">
+            <div class="dropdown">
+                <button class="btn-link" style="border: none; font-family: 'Outfit', sans-serif; cursor: pointer;">
+                    Dashboard View ▼
+                </button>
+                <div class="dropdown-content">
+                    <a href="/">All Departments</a>
+                    <a href="/?dept=BTECH CSE">Btech CSE</a>
+                    <a href="/?dept=Agriculture">Agriculture</a>
+                </div>
+            </div>
+
+            <a href="/admin/" class="btn-link" style="background:var(--primary);">Admin</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-action">
+            <div>
+                <h2>Course Faculty Allocation</h2>
+                <p class="text-muted">Easily reassign faculty members and classrooms to active course sessions.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <a href="?dept=BTECH CSE"
+                    class="btn-primary">BTech CSE</a>
+                <a href="?dept=Agriculture"
+                    class="btn-link">Agriculture</a>
+                
+                <a href="/courses/" class="btn-link" style="color:var(--warning);">Clear Filter</a>
+                
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Day / Time</th>
+                        <th>Faculty Assignment (Select Available)</th>
+                        <th>Classroom Assignment (Select Free Room)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td><strong>CSE101</strong><br><small>Intro to Programming</small></td>
+                        <td class="text-muted">Monday<br><small>09:00 - 13:00</small></td>
+
+                        <!-- Faculty Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="1">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--success);">Current: Dr. Smith</div>
+                                    <select name="faculty_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Dr. Smith (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Prof. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Mr. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Steve (BTECH CSE)
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+
+                        <!-- Classroom Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="1">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--primary-light);">Current: Block 32-301</div>
+                                    <select name="classroom_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Block 32 - 301
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Block 32 - 302
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Block 33 - 101
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Block 55 - 101
+                                        </option>
+                                        
+                                        <option value="5" >
+                                            Block 56 - 101
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td><strong>CSE201</strong><br><small>Data Structures</small></td>
+                        <td class="text-muted">Tuesday<br><small>09:00 - 14:00</small></td>
+
+                        <!-- Faculty Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="2">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--success);">Current: Dr. Smith</div>
+                                    <select name="faculty_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Dr. Smith (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Prof. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Mr. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Steve (BTECH CSE)
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+
+                        <!-- Classroom Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="2">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--primary-light);">Current: Block 32-301</div>
+                                    <select name="classroom_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Block 32 - 301
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Block 32 - 302
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Block 33 - 101
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Block 55 - 101
+                                        </option>
+                                        
+                                        <option value="5" >
+                                            Block 56 - 101
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td><strong>CSE301</strong><br><small>Database Systems</small></td>
+                        <td class="text-muted">Wednesday<br><small>09:00 - 13:00</small></td>
+
+                        <!-- Faculty Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="3">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--success);">Current: Dr. Smith</div>
+                                    <select name="faculty_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Dr. Smith (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Prof. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Mr. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Steve (BTECH CSE)
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+
+                        <!-- Classroom Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="3">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--primary-light);">Current: Block 32-301</div>
+                                    <select name="classroom_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Block 32 - 301
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Block 32 - 302
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Block 33 - 101
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Block 55 - 101
+                                        </option>
+                                        
+                                        <option value="5" >
+                                            Block 56 - 101
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td><strong>CSE101</strong><br><small>Intro to Programming</small></td>
+                        <td class="text-muted">Thursday<br><small>10:00 - 14:00</small></td>
+
+                        <!-- Faculty Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="4">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--success);">Current: Dr. Smith</div>
+                                    <select name="faculty_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Dr. Smith (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Prof. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Mr. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Steve (BTECH CSE)
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+
+                        <!-- Classroom Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="4">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--primary-light);">Current: Block 32-302</div>
+                                    <select name="classroom_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" >
+                                            Block 32 - 301
+                                        </option>
+                                        
+                                        <option value="2" selected>
+                                            Block 32 - 302
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Block 33 - 101
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Block 55 - 101
+                                        </option>
+                                        
+                                        <option value="5" >
+                                            Block 56 - 101
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td><strong>CSE101</strong><br><small>Intro to Programming</small></td>
+                        <td class="text-muted">Friday<br><small>09:00 - 13:00</small></td>
+
+                        <!-- Faculty Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="5">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--success);">Current: Dr. Smith</div>
+                                    <select name="faculty_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Dr. Smith (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Prof. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Mr. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Steve (BTECH CSE)
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+
+                        <!-- Classroom Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="5">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--primary-light);">Current: Block 32-302</div>
+                                    <select name="classroom_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" >
+                                            Block 32 - 301
+                                        </option>
+                                        
+                                        <option value="2" selected>
+                                            Block 32 - 302
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Block 33 - 101
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Block 55 - 101
+                                        </option>
+                                        
+                                        <option value="5" >
+                                            Block 56 - 101
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td><strong>CSE201</strong><br><small>Data Structures</small></td>
+                        <td class="text-muted">Saturday<br><small>09:00 - 13:00</small></td>
+
+                        <!-- Faculty Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="6">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--success);">Current: Dr. Smith</div>
+                                    <select name="faculty_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Dr. Smith (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Prof. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Mr. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Steve (BTECH CSE)
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+
+                        <!-- Classroom Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="6">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--primary-light);">Current: Block 33-101</div>
+                                    <select name="classroom_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" >
+                                            Block 32 - 301
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Block 32 - 302
+                                        </option>
+                                        
+                                        <option value="3" selected>
+                                            Block 33 - 101
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Block 55 - 101
+                                        </option>
+                                        
+                                        <option value="5" >
+                                            Block 56 - 101
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td><strong>CSE101</strong><br><small>Intro to Programming</small></td>
+                        <td class="text-muted">Monday<br><small>09:00 - 11:00</small></td>
+
+                        <!-- Faculty Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="7">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--success);">Current: Dr. Smith</div>
+                                    <select name="faculty_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Dr. Smith (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Prof. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Mr. Johnson (BTECH CSE)
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Steve (BTECH CSE)
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+
+                        <!-- Classroom Reassignment Form -->
+                        <td>
+                            <form method="POST"
+                                action="/courses/?dept=BTECH CSE"
+                                class="assign-form">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="PXxZu5PerzviwC4hSAbZgz6TLZUCR5OMT9E6a76q1o6JAOIoKJDWf4dyqjDfoVz8">
+                                <input type="hidden" name="allocation_id" value="7">
+                                <div>
+                                    <div style="margin-bottom: 5px; color:var(--primary-light);">Current: Block 32-301</div>
+                                    <select name="classroom_id" class="form-select" style="width: 100%;" required
+                                        onchange="this.form.submit()">
+                                        
+                                        <option value="1" selected>
+                                            Block 32 - 301
+                                        </option>
+                                        
+                                        <option value="2" >
+                                            Block 32 - 302
+                                        </option>
+                                        
+                                        <option value="3" >
+                                            Block 33 - 101
+                                        </option>
+                                        
+                                        <option value="4" >
+                                            Block 55 - 101
+                                        </option>
+                                        
+                                        <option value="5" >
+                                            Block 56 - 101
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>
