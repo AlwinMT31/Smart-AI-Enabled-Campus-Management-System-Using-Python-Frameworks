@@ -1,0 +1,1 @@
+# Smart-AI-Enabled-Campus-Management-System-Using-Python-Frameworks
